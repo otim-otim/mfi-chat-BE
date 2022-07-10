@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientControllers\AuthController;
+use App\Http\Controllers\ClientControllers\ChatController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,21 +19,19 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+// Route::post('/client/auth/register',[AuthController::class,'register'])->name('client.register');
 Route::post('auth/login',[AuthController::class,'login'])->name('client.login');
 Route::post('auth/register',[AuthController::class,'register'])->name('client.register');
-// Route::post('/client/auth/register',[AuthController::class,'register'])->name('client.register');
 
 Route::middleware([
-    'auth:api',
-   
-])->group(function () {
-   
-
-    //chat routes
-    Route::get('chats/index',[ChatController::class,'index'])->name('chat.index');
-    Route::get('chat/show/{chat}' ,[ChatController::class,'show'])->name('chat.show');
-    Route::post('chat/store/{id}' ,[ChatController::class,'store'])->name('chat.store');
-
-    //message routes
-    Route::post('chat/message/send',[MessageController::class,'store'])->name('message.store');
+    'jwt.verify',
+    
+    ])->group(function () {
+        //chat routes
+        Route::get('chats/index',[ChatController::class,'index'])->name('chat.index');
+        Route::get('chat/show/{chat}' ,[ChatController::class,'show'])->name('chat.show');
+        Route::post('chat/store/{id}' ,[ChatController::class,'store'])->name('chat.store');
+        
+        //message routes
+        Route::post('chat/message/send',[MessageController::class,'store'])->name('message.store');
 });

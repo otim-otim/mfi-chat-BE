@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ClientControllers;
 
+use JWTAuth;
 use App\Models\Chat;
 use App\Models\User;
 use App\Models\Borrower;
@@ -18,15 +19,19 @@ class ChatController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->borrower = JWTAuth::parseToken()->authenticate();
     }
 
     public function index()
     {
-        $borrower = Borrower::find(Auth::id());
-        $chats = $borrower->chats;
+        // dd(auth('api')->user());
+        $borrower = Borrower::find(Auth::guard('api')->id());
+        // dd($borrower);
+        // $chats = $borrower->chats()->with(['messages','user'])->get();
+        // dd($chats);
         return response()->json([
-            'chats'=>$chats,
+            'chats'=>'',
+            'user'=> Auth::guard('api')->check(),
             'message'=> 'chats retrieved successfully'
         ],200);
     }

@@ -9262,3 +9262,9 @@ h3 {
     border-color: #dee2e6;
   }
 }
+.chat-index {
+  width: 60%;
+  height: 60%;
+  border: thin thick blue;
+  border: 2px;
+}

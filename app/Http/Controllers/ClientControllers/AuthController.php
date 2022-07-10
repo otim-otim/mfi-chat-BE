@@ -1,16 +1,17 @@
 <?php
 
 namespace App\Http\Controllers\ClientControllers;
-
+use JWTAuth;
 use App\Models\Borrower;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('jwt-verify', ['except' => ['login','register']]);
     }
 
     /**
@@ -22,11 +23,20 @@ class AuthController extends Controller
     {
         $credentials = request(['phone', 'password']);
         // dd($credentials);
-        if (! $token = auth('api')->attempt($credentials)) {
+        if (! $token = Auth::guard('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        $access_token = $this->respondWithToken($token);
+        $borrower = Borrower::where('phone',request()->phone)->first();
+        // dd($borrower);
+        // dd(auth('api')->login($borrower));
+        return response()->json([
+            'borrower' => $borrower,
+            'access_token'=> $access_token,
+        ]);
+
+       
     }
 
     public function register(Request $request){
@@ -88,7 +98,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 60
         ]);
     }
 }

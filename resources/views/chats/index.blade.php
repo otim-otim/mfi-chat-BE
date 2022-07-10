@@ -1,7 +1,11 @@
 @extends('layouts.master')
 @section('content')
-<a href=" {{route('chat.create')}} " class="btn btn-primary">New Chat</a>
-    <div class="flex m-5 w-3 h-5 w-4 border  border-dark">
+<div class="container">
+    <a href=" {{route('chat.create')}} " class="btn btn-primary ">New Chat</a>
+
+</div>
+    <div class=" m-5 w-3 h-5 w-4 border border-4 border-primary container chat-index" style=" width: 60%;
+    height: 60%;    border-width: 3px; border-style: solid;   border-radius: 2px;">
         @if(!$chats)
             <div >
                 <h6>no chats available yet</h6>
